@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0f] text-white relative overflow-hidden flex">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button id="mobileMenuToggle" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20" onclick="toggleSidebar()">
+        <i data-lucide="menu" class="w-6 h-6 text-white"></i>
+    </button>
+
+    <!-- Glassmorphism Sidebar -->
+    <aside id="sidebar" class="w-72 glass-strong flex-shrink-0 border-r border-white/10 relative z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 fixed lg:static h-full">
+        <!-- Close Button for Mobile -->
+        <button class="lg:hidden absolute top-4 right-4 p-2 text-gray-400 hover:text-white" onclick="toggleSidebar()">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-white/10">
+            <a href="/" class="flex items-center space-x-3 group text-decoration-none">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
+                    <i data-lucide="mic" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold text-white">VoiceForge</span>
+                    <span class="text-xs text-purple-400 block font-medium">AI Voice Cloning</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="/dashboard" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border border-white/10 shadow-lg">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 text-purple-400"></i>
+                <span class="font-medium">Dashboard</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-purple-400"></i>
+            </a>
+            <a href="/voices" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="mic" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Voice Library</span>
+            </a>
+            <a href="/generate" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="wand-2" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Generate Audio</span>
+            </a>
+            <a href="/avatar" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="video" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">AI Avatar Video</span>
+            </a>
+            <a href="/history" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="history" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">History</span>
+            </a>
+            <a href="/upgrade" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="trending-up" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Upgrade Plan</span>
+            </a>
+            <a href="/settings" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="settings" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Settings</span>
+            </a>
+        </nav>
+
+        <!-- User Info Card -->
+        <div class="mt-auto p-4">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">{{ user.full_name[0] if user.full_name else 'U' }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-medium truncate">{{ user.full_name }}</p>
+                        <p class="text-xs text-purple-400">{{ user.plan|capitalize }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="p-4 pt-0">
+            <a href="/logout" onclick="handleLogout()" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-xl transition-all duration-300 group text-decoration-none">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:text-red-400 transition-colors"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-auto relative z-10">
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 glass border-b border-white/10 px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Dashboard</h1>
+                    <p class="text-sm text-gray-400">Welcome back! Here's your voice cloning overview.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="h-8 w-px bg-white/10"></div>
+                    <div class="glass-card px-4 py-2 rounded-xl">
+                        <span class="text-sm text-gray-400">Credits:</span>
+                        <span class="text-sm font-bold text-white ml-1">{{ user.credits_remaining }}</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="p-8 space-y-6">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Total Voices -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Total Voices</p>
+                            <p class="text-3xl font-bold text-white mt-1" id="totalVoices">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i data-lucide="mic" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Generations -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Generations</p>
+                            <p class="text-3xl font-bold text-white mt-1" id="totalGenerations">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i data-lucide="wand-2" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Credits Available -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Credits Available</p>
+                            <p class="text-3xl font-bold text-white mt-1" id="remainingCredits">{{ user.credits_remaining }}</p>
+                        </div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i data-lucide="credit-card" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Plan Status -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <p class="text-gray-400 text-sm">Plan</p>
+                            <p class="text-3xl font-bold text-white mt-1">{{ user.plan|capitalize }}</p>
+                            <a href="/upgrade" class="inline-flex items-center space-x-1 mt-2 text-purple-400 hover:text-purple-300 text-sm font-medium text-decoration-none">
+                                <i data-lucide="trending-up" class="w-3 h-3"></i>
+                                <span>Upgrade Plan</span>
+                            </a>
+                        </div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Generate Audio Card -->
+                <div class="glass-card rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-colors">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Generate Audio</h3>
+                            <p class="text-gray-400 mb-4">Create new audio in your cloned voice</p>
+                            <a href="/generate" class="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all text-decoration-none">
+                                <span>Get Started</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl flex items-center justify-center border border-purple-500/30">
+                            <i data-lucide="sparkles" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Plan Card -->
+                <div class="glass-card rounded-2xl p-6 border border-orange-500/20 hover:border-orange-500/40 transition-colors">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Change Plan</h3>
+                            <p class="text-gray-400 mb-4">Current: <span class="text-orange-400 font-medium">{{ user.plan|capitalize }}</span></p>
+                            <a href="/upgrade" class="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all text-decoration-none">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i>
+                                <span>Upgrade / Change Plan</span>
+                            </a>
+                        </div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-xl flex items-center justify-center border border-orange-500/30">
+                            <i data-lucide="crown" class="w-6 h-6 text-orange-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Generations -->
+            <div class="glass-card rounded-2xl border border-white/10 overflow-hidden">
+                <div class="p-6 border-b border-white/10 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-white">Recent Generations</h3>
+                    <a href="/history" class="text-purple-400 hover:text-purple-300 font-medium text-decoration-none">
+                        View All
+                    </a>
+                </div>
+                <div id="recentActivity" class="divide-y divide-white/5">
+                    <div class="p-8 text-center">
+                        <p class="text-gray-400">No generations yet. Start by uploading a voice!</p>
+                        <a href="/voices" class="inline-block mt-4 text-purple-400 hover:text-purple-300 font-medium text-decoration-none">
+                            Upload Your First Voice
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set up axios defaults with auth token
+const token = localStorage.getItem('token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
+// Handle logout
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    delete axios.defaults.headers.common['Authorization'];
+    window.location.href = '/logout';
+}
+
+// Mobile sidebar toggle
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('-translate-x-full');
+}
+
+// Load dashboard stats
+async function loadDashboardStats() {
+    try {
+        const response = await axios.get('/api/dashboard/stats');
+        const stats = response.data;
+        
+        document.getElementById('totalVoices').textContent = stats.total_voices;
+        document.getElementById('totalGenerations').textContent = stats.total_generations;
+        document.getElementById('remainingCredits').textContent = stats.remaining_credits;
+    } catch (error) {
+        console.error('Error loading dashboard stats:', error);
+    }
+}
+
+// Load recent activity
+async function loadRecentActivity() {
+    try {
+        const response = await axios.get('/api/generations');
+        const generations = response.data.generations.slice(0, 5);
+        
+        const activityDiv = document.getElementById('recentActivity');
+        
+        if (generations.length === 0) {
+            return;
+        }
+        
+        activityDiv.innerHTML = generations.map(gen => `
+            <div class="p-4 hover:bg-white/5 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">
+                            ${gen.text.substring(0, 60)}${gen.text.length > 60 ? '...' : ''}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            ${new Date(gen.created_at).toLocaleDateString()} • ${gen.duration_seconds ? (gen.duration_seconds / 60).toFixed(1) : '0.0'} min
+                        </p>
+                    </div>
+                    <a href="/history" class="ml-4 text-purple-400 hover:text-purple-300">
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    } catch (error) {
+        console.error('Error loading recent activity:', error);
+    }
+}
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardStats();
+    loadRecentActivity();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}Plan Management - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 glass border-r border-white/10 flex flex-col relative z-20">
+        <!-- Logo -->
+        <div class="p-6">
+            <a href="/admin" class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                    <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-white">Admin</span>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="/admin" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="/admin/users" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="users" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">User Management</span>
+            </a>
+            <a href="/admin/voices" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="mic" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Voice Moderation</span>
+            </a>
+            <a href="/admin/sub-admins" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="crown" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Sub-Admins</span>
+            </a>
+            <a href="/admin/plans" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border border-white/10 shadow-lg">
+                <i data-lucide="credit-card" class="w-5 h-5 text-purple-400"></i>
+                <span class="font-medium">Plan Management</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-purple-400"></i>
+            </a>
+            <a href="/admin/settings" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="settings" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Settings</span>
+            </a>
+        </nav>
+
+        <!-- Admin Info Card -->
+        <div class="mt-auto p-4">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">A</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-medium truncate">Administrator</p>
+                        <p class="text-xs text-purple-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="p-4 pt-0">
+            <a href="/admin/logout" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-xl transition-all duration-300 group text-decoration-none">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:text-red-400 transition-colors"></i>
+                <span>Admin Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-auto relative z-10">
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 glass border-b border-white/10 px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Plan Management</h1>
+                    <p class="text-sm text-gray-400">Manage subscription plans and credit packages</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="openCreateModal()" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all flex items-center space-x-2">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                        <span>Add Plan</span>
+                    </button>
+                    <div class="h-8 w-px bg-white/10"></div>
+                    <a href="/dashboard" class="text-sm text-gray-400 hover:text-white transition-colors text-decoration-none">
+                        Back to App →
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Plans Content -->
+        <div class="p-8 space-y-6">
+            <!-- Filters -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="text"
+                            id="searchTerm"
+                            placeholder="Search plans..."
+                            class="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                        />
+                    </div>
+                    <div class="flex items-center space-x-2 px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
+                        <i data-lucide="filter" class="w-5 h-5 text-gray-400"></i>
+                        <select
+                            id="filter"
+                            class="bg-transparent text-white focus:outline-none cursor-pointer"
+                        >
+                            <option value="all" class="bg-gray-800">All Plans</option>
+                            <option value="subscription" class="bg-gray-800">Subscription</option>
+                            <option value="credit" class="bg-gray-800">Credit Packages</option>
+                        </select>
+                    </div>
+                    <button
+                        onclick="fetchPlans()"
+                        class="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plans Table -->
+            <div class="glass-card rounded-2xl border border-white/10 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-white/5 border-b border-white/10">
+                            <tr>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Plan</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Price</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Audio</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Video</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Status</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Type</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plansTable" class="divide-y divide-white/5">
+                            <tr>
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+                                    <p class="text-gray-400 mt-2">Loading plans...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Create/Edit Plan Modal -->
+<div id="planModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm min-h-full" onclick="closeModal()"></div>
+    <div class="relative min-h-full flex items-center justify-center p-2 sm:p-4">
+        <div class="glass-card rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 relative m-auto">
+            <button onclick="closeModal()" class="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-white z-10">
+                <i data-lucide="x" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+            </button>
+            <h2 id="modalTitle" class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 pr-8">Edit Plan</h2>
+            <form id="planForm" onsubmit="handleSubmit(event)" class="space-y-3 sm:space-y-4">
+                <input type="hidden" id="planId">
+                
+                <!-- Basic Info -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Plan Name <span class="text-xs text-gray-500">(Internal ID)</span></label>
+                    <input type="text" id="planName" required readonly class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-sm text-gray-400 cursor-not-allowed">
+                </div>
+                
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Display Name <span class="text-xs text-gray-500">(What users see)</span></label>
+                    <input type="text" id="planDisplayName" required class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Short Description</label>
+                    <input type="text" id="planDescription" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none">
+                </div>
+                
+                <!-- Pricing -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Price ($)</label>
+                    <input type="number" id="planPriceMonthly" step="0.01" required class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none">
+                    <p class="text-xs text-gray-500 mt-1" id="priceHint">Enter monthly price (or one-time price for credit packages)</p>
+                </div>
+                
+                <!-- Limits -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Audio Generations Limit</label>
+                    <input type="number" id="planAudioLimit" required class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none">
+                    <p class="text-xs text-gray-500 mt-1">How many audio files user can generate</p>
+                </div>
+                
+                <!-- Features -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-300 mb-1 sm:mb-2">Features <span class="text-xs text-gray-500">(comma separated)</span></label>
+                    <textarea id="planFeatures" rows="2" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none resize-none" placeholder="e.g. 50 audio/month, High quality, No watermark"></textarea>
+                </div>
+                
+                <!-- Settings -->
+                <div class="flex flex-wrap gap-3 sm:gap-6 pt-1">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="planIsActive" checked class="w-4 h-4 sm:w-5 sm:h-5 rounded border-white/10 bg-white/5 text-purple-500 focus:ring-purple-500">
+                        <span class="text-sm text-gray-300">Plan Active</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="planIsPopular" class="w-4 h-4 sm:w-5 sm:h-5 rounded border-white/10 bg-white/5 text-purple-500 focus:ring-purple-500">
+                        <span class="text-sm text-gray-300">Mark as Popular</span>
+                    </label>
+                </div>
+                
+                <div class="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-white/10">
+                    <button type="button" onclick="closeModal()" class="px-4 sm:px-6 py-2 sm:py-3 text-sm text-gray-300 hover:text-white transition-colors rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 sm:px-6 py-2 sm:py-3 text-sm bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Setup auth token for API calls
+const token = localStorage.getItem('token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
+let plans = [];
+let editingPlanId = null;
+
+async function fetchPlans() {
+    const searchTerm = document.getElementById('searchTerm').value.toLowerCase();
+    const filter = document.getElementById('filter').value;
+    
+    try {
+        const response = await axios.get('/api/v1/admin/plans');
+        plans = response.data;
+        
+        // Filter plans
+        let filtered = plans;
+        if (searchTerm) {
+            filtered = filtered.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) || 
+                p.display_name.toLowerCase().includes(searchTerm)
+            );
+        }
+        if (filter === 'subscription') {
+            filtered = filtered.filter(p => p.price_yearly !== null);
+        } else if (filter === 'credit') {
+            filtered = filtered.filter(p => p.price_yearly === null);
+        }
+        
+        renderPlans(filtered);
+    } catch (error) {
+        console.error('Error loading plans:', error);
+        document.getElementById('plansTable').innerHTML = `
+            <tr>
+                <td colspan="7" class="px-6 py-12 text-center text-red-400">
+                    Failed to load plans
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function renderPlans(plansToRender) {
+    const table = document.getElementById('plansTable');
+    
+    if (plansToRender.length === 0) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="px-6 py-12 text-center text-gray-400">
+                    No plans found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    table.innerHTML = plansToRender.map(plan => {
+        const isCreditPackage = plan.price_yearly === null;
+        return `
+            <tr class="hover:bg-white/5 transition-colors">
+                <td class="px-6 py-4">
+                    <div>
+                        <p class="font-medium text-white">${plan.display_name}</p>
+                        <p class="text-sm text-gray-400">${plan.name}</p>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <p class="text-white font-medium">$${plan.price_monthly}</p>
+                    ${plan.price_yearly ? `<p class="text-xs text-gray-400">$${plan.price_yearly}/year</p>` : '<p class="text-xs text-gray-400">One-time</p>'}
+                </td>
+                <td class="px-6 py-4 text-white">${plan.audio_limit}</td>
+                <td class="px-6 py-4 text-white">${plan.video_limit}</td>
+                <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${plan.is_active ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}">
+                        ${plan.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full ${isCreditPackage ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}">
+                        ${isCreditPackage ? 'Credit Package' : 'Subscription'}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center space-x-2">
+                        <button onclick="editPlan(${plan.id})" class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors" title="Edit">
+                            <i data-lucide="edit" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="deletePlan(${plan.id})" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+    
+    lucide.createIcons();
+}
+
+function openCreateModal() {
+    editingPlanId = null;
+    document.getElementById('modalTitle').textContent = 'Create New Plan';
+    document.getElementById('planForm').reset();
+    document.getElementById('planId').value = '';
+    document.getElementById('planModal').classList.remove('hidden');
+}
+
+function editPlan(id) {
+    const plan = plans.find(p => p.id === id);
+    if (!plan) return;
+    
+    editingPlanId = id;
+    document.getElementById('modalTitle').textContent = 'Edit Plan';
+    document.getElementById('planId').value = plan.id;
+    document.getElementById('planName').value = plan.name;
+    document.getElementById('planDisplayName').value = plan.display_name;
+    document.getElementById('planDescription').value = plan.description || '';
+    document.getElementById('planPriceMonthly').value = plan.price_monthly;
+    document.getElementById('planAudioLimit').value = plan.audio_limit;
+    document.getElementById('planFeatures').value = plan.features || '';
+    document.getElementById('planIsActive').checked = plan.is_active;
+    document.getElementById('planIsPopular').checked = plan.is_popular;
+    
+    // Update price hint based on plan type
+    const isCreditPackage = plan.price_yearly === null;
+    document.getElementById('priceHint').textContent = isCreditPackage 
+        ? 'One-time price for credit package' 
+        : 'Monthly subscription price';
+    
+    document.getElementById('planModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('planModal').classList.add('hidden');
+}
+
+async function handleSubmit(e) {
+    e.preventDefault();
+    
+    const data = {
+        name: document.getElementById('planName').value,
+        display_name: document.getElementById('planDisplayName').value,
+        description: document.getElementById('planDescription').value,
+        price_monthly: parseFloat(document.getElementById('planPriceMonthly').value),
+        audio_limit: parseInt(document.getElementById('planAudioLimit').value),
+        features: document.getElementById('planFeatures').value,
+        is_active: document.getElementById('planIsActive').checked,
+        is_popular: document.getElementById('planIsPopular').checked
+    };
+    
+    try {
+        if (editingPlanId) {
+            await axios.put(`/api/v1/admin/plans/${editingPlanId}`, data);
+            showToast('Plan updated successfully', 'success');
+        } else {
+            await axios.post('/api/v1/admin/plans', data);
+            showToast('Plan created successfully', 'success');
+        }
+        closeModal();
+        fetchPlans();
+    } catch (error) {
+        console.error('Error saving plan:', error);
+        showToast('Failed to save plan: ' + (error.response?.data?.detail || error.message), 'error');
+    }
+}
+
+async function deletePlan(id) {
+    if (!confirm('Are you sure you want to delete this plan?')) return;
+    
+    try {
+        await axios.delete(`/api/v1/admin/plans/${id}`);
+        showToast('Plan deleted successfully', 'success');
+        fetchPlans();
+    } catch (error) {
+        console.error('Error deleting plan:', error);
+        showToast('Failed to delete plan: ' + (error.response?.data?.detail || error.message), 'error');
+    }
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-xl shadow-lg z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', fetchPlans);
+</script>
+{% endblock %}

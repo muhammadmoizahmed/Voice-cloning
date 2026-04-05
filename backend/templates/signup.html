@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark text-white relative overflow-hidden flex items-center justify-center p-4">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <!-- Signup Card -->
+    <div class="relative z-10 w-full max-w-md">
+        <div class="glass-card rounded-3xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-2">Create your account</h2>
+            <p class="text-gray-400 mb-6">Start cloning your voice today</p>
+
+            <form id="signupForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="text"
+                            name="fullName"
+                            required
+                            class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                            placeholder="John Doe"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            required
+                            minlength="8"
+                            class="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                            placeholder="••••••••"
+                        />
+                        <button
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                        >
+                            <i data-lucide="eye" class="w-5 h-5" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            id="confirmPassword"
+                            required
+                            class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                            placeholder="••••••••"
+                        />
+                    </div>
+                </div>
+
+                <div class="flex items-start">
+                    <input
+                        type="checkbox"
+                        name="consent"
+                        required
+                        class="mt-1 rounded border-white/30 bg-white/5 text-purple-500 focus:ring-purple-500"
+                    />
+                    <label class="ml-2 text-sm text-gray-400">
+                        I agree to the <a href="/terms-of-service" class="text-purple-400 hover:text-purple-300">Terms of Service</a> and <a href="/privacy-policy" class="text-purple-400 hover:text-purple-300">Privacy Policy</a>. I confirm that I own the voice I will upload.
+                    </label>
+                </div>
+
+                <button
+                    type="submit"
+                    id="signupBtn"
+                    class="w-full btn-3d text-white py-3 rounded-xl font-semibold transition-all"
+                >
+                    Create Account
+                </button>
+            </form>
+
+            <p class="text-center mt-6 text-gray-400">
+                Already have an account?{' '}
+                <a href="/login" class="text-purple-400 hover:text-purple-300 font-medium">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirmPassword');
+    const toggleIcon = document.querySelector('#toggleIcon');
+    
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+    confirmInput.type = type;
+    
+    if (type === 'text') {
+        toggleIcon.setAttribute('data-lucide', 'eye-off');
+    } else {
+        toggleIcon.setAttribute('data-lucide', 'eye');
+    }
+    lucide.createIcons();
+}
+
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const signupBtn = document.getElementById('signupBtn');
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+    }
+    
+    const originalText = signupBtn.textContent;
+    signupBtn.disabled = true;
+    signupBtn.textContent = 'Creating account...';
+    
+    try {
+        const formData = new FormData(this);
+        const data = {
+            email: formData.get('email'),
+            password: password,
+            full_name: formData.get('fullName'),
+            consent_given: formData.get('consent') === 'on'
+        };
+        
+        const response = await axios.post('/api/v1/auth/signup', data);
+        
+        if (response.data.requires_verification || response.data.success) {
+            alert(response.data.message);
+            window.location.href = '/verify-otp?email=' + encodeURIComponent(response.data.email);
+        } else {
+            alert(response.data.message || 'Signup failed');
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        console.error('Response data:', error.response?.data);
+        let errorMsg = 'Signup failed.';
+        let isAlreadyRegistered = false;
+        
+        if (error.response?.data?.detail) {
+            const detail = error.response.data.detail;
+            if (Array.isArray(detail)) {
+                errorMsg = detail.map(e => e.loc + ': ' + (e.msg || e.message || JSON.stringify(e))).join('\n');
+            } else if (typeof detail === 'string') {
+                errorMsg = detail;
+                if (detail.toLowerCase().includes('already') || detail.toLowerCase().includes('registered')) {
+                    isAlreadyRegistered = true;
+                }
+            } else {
+                errorMsg = JSON.stringify(detail);
+            }
+        } else if (error.response?.data) {
+            errorMsg = JSON.stringify(error.response.data);
+        }
+        
+        if (isAlreadyRegistered) {
+            if (confirm(errorMsg + '\n\nDo you want to go to the login page?')) {
+                window.location.href = '/login';
+            }
+        } else {
+            alert(errorMsg);
+        }
+    } finally {
+        signupBtn.disabled = false;
+        signupBtn.textContent = originalText;
+    }
+});
+</script>
+{% endblock %}

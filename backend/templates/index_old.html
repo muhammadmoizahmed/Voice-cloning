@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}VoiceForge AI - Advanced Voice Cloning Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 hero-gradient opacity-40"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/20 to-slate-900/30"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="floating-card">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 neon-text">
+                <span class="text-gradient">Clone Your Voice</span>
+                <br>
+                <span class="text-slate-200">with AI</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto transform hover:scale-105 transition-transform duration-300">
+                Transform your voice into an AI-powered digital twin. Create unlimited voice clones, generate speech in any style, and revolutionize your content creation.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{{ url_for('signup_page') }}" class="glow-button bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition transform hover:scale-110 hover:rotate-1 shadow-2xl">
+                    <i class="fas fa-rocket mr-2"></i>Get Started Free
+                </a>
+                <a href="{{ url_for('login_page') }}" class="glass-card hover:bg-slate-800/50 text-slate-200 px-8 py-4 rounded-xl text-lg font-semibold transition transform hover:scale-105 hover:rotate-1 border border-purple-600/30">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-violet-600/20 rounded-full opacity-30 blur-xl floating-card"></div>
+    <div class="absolute top-40 right-20 w-32 h-32 bg-indigo-600/20 rounded-full opacity-30 blur-xl floating-card" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-20 left-1/4 w-24 h-24 bg-purple-600/20 rounded-full opacity-30 blur-xl floating-card" style="animation-delay: 4s;"></div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-slate-900/50 via-purple-900/30 to-slate-900/50"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4 text-gradient neon-text">Powerful Features</h2>
+            <p class="text-xl text-slate-300 transform hover:scale-105 transition-transform">Everything you need for professional voice cloning</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-card p-8 rounded-2xl text-center card-3d hover:bg-gradient-to-br hover:from-violet-900/30 hover:to-purple-900/30 transition-all duration-500 group">
+                <div class="w-20 h-20 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <i class="fas fa-microphone text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-4 text-gradient">Voice Cloning</h3>
+                <p class="text-slate-300 group-hover:text-white transition-colors">Create perfect digital copies of any voice with advanced AI technology</p>
+            </div>
+            
+            <div class="glass-card p-8 rounded-2xl text-center card-3d hover:bg-gradient-to-br hover:from-indigo-900/30 hover:to-purple-900/30 transition-all duration-500 group">
+                <div class="w-20 h-20 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <i class="fas fa-volume-up text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-4 text-gradient">Text to Speech</h3>
+                <p class="text-slate-300 group-hover:text-white transition-colors">Generate natural-sounding speech from text in your cloned voice</p>
+            </div>
+            
+            <div class="glass-card p-8 rounded-2xl text-center card-3d hover:bg-gradient-to-br hover:from-purple-900/30 hover:to-slate-900/30 transition-all duration-500 group">
+                <div class="w-20 h-20 bg-gradient-to-r from-purple-600 to-slate-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <i class="fas fa-cloud text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-4 text-gradient">Cloud Storage</h3>
+                <p class="text-slate-300 group-hover:text-white transition-colors">Secure cloud storage for all your voice models and generated audio</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="py-20 relative">
+    <div class="absolute inset-0 bg-gradient-to-l from-slate-900/50 via-purple-900/30 to-slate-900/50"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4 text-gradient neon-text">Simple Pricing</h2>
+            <p class="text-xl text-slate-300 transform hover:scale-105 transition-transform">Choose the perfect plan for your needs</p>
+        </div>
+        
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="glass-card p-8 rounded-2xl card-3d hover:bg-gradient-to-br hover:from-slate-800/50 hover:to-slate-700/50 transition-all duration-500 group">
+                <h3 class="text-2xl font-bold mb-4 text-slate-400">Free</h3>
+                <p class="text-4xl font-bold mb-4 text-slate-500">$0</p>
+                <ul class="text-slate-300 space-y-2 mb-8">
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>3 Credits/month</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>Basic voices</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>Standard quality</li>
+                </ul>
+                <a href="{{ url_for('signup_page') }}" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl transition transform hover:scale-105 hover:rotate-1 block text-center">
+                    Get Started
+                </a>
+            </div>
+            
+            <div class="glass-card p-8 rounded-2xl card-3d border-2 border-purple-600 hover:bg-gradient-to-br hover:from-violet-900/30 hover:to-purple-900/30 transition-all duration-500 group relative">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm">
+                    Popular
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gradient">Starter</h3>
+                <p class="text-4xl font-bold mb-4 text-gradient">$5</p>
+                <ul class="text-slate-300 space-y-2 mb-8">
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>50 Credits/month</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>High quality voices</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>Faster generation</li>
+                </ul>
+                <a href="{{ url_for('signup_page') }}" class="w-full glow-button bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 text-white py-3 rounded-xl transition transform hover:scale-110 hover:rotate-1 block text-center">
+                    Choose Starter
+                </a>
+            </div>
+            
+            <div class="glass-card p-8 rounded-2xl card-3d hover:bg-gradient-to-br hover:from-indigo-900/30 hover:to-purple-900/30 transition-all duration-500 group">
+                <h3 class="text-2xl font-bold mb-4 text-gradient">Pro</h3>
+                <p class="text-4xl font-bold mb-4 text-gradient">$15</p>
+                <ul class="text-slate-300 space-y-2 mb-8">
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>200 Credits/month</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>Ultra quality voices</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>API access</li>
+                </ul>
+                <a href="{{ url_for('signup_page') }}" class="w-full bg-indigo-700 hover:bg-indigo-600 text-white py-3 rounded-xl transition transform hover:scale-105 hover:rotate-1 block text-center">
+                    Choose Pro
+                </a>
+            </div>
+            
+            <div class="glass-card p-8 rounded-2xl card-3d hover:bg-gradient-to-br hover:from-purple-900/30 hover:to-slate-900/30 transition-all duration-500 group">
+                <h3 class="text-2xl font-bold mb-4 text-gradient">Business</h3>
+                <p class="text-4xl font-bold mb-4 text-gradient">$30</p>
+                <ul class="text-slate-300 space-y-2 mb-8">
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>500 Credits/month</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>Priority support</li>
+                    <li class="hover:text-white transition-colors"><i class="fas fa-check text-green-400 mr-2"></i>Custom voices</li>
+                </ul>
+                <a href="{{ url_for('signup_page') }}" class="w-full bg-purple-700 hover:bg-purple-600 text-white py-3 rounded-xl transition transform hover:scale-105 hover:rotate-1 block text-center">
+                    Choose Business
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

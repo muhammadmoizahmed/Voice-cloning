@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Email - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex items-center justify-center p-4">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- OTP Card -->
+    <div class="relative z-10 w-full max-w-xl px-4">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl shadow-lg shadow-purple-500/25 mb-4">
+                <i data-lucide="shield" class="w-8 h-8 text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Verify Email</h1>
+            <p class="text-gray-400">Enter the 6-digit code sent to your email</p>
+        </div>
+
+        <!-- Email Display -->
+        <div class="glass-card rounded-2xl p-4 mb-6">
+            <div class="flex items-center justify-center gap-3 p-3 bg-white/5 rounded-xl overflow-hidden">
+                <i data-lucide="mail" class="w-5 h-5 text-purple-400 flex-shrink-0"></i>
+                <span id="userEmail" class="text-white font-medium text-sm sm:text-base whitespace-nowrap overflow-hidden text-ellipsis">{{ email }}</span>
+            </div>
+        </div>
+
+        <!-- OTP Form -->
+        <div class="glass-card rounded-2xl p-6 md:p-8">
+            <form id="otpForm">
+                <!-- OTP Inputs -->
+                <div class="flex justify-center items-center gap-1.5 sm:gap-2 mb-8">
+                    <input type="text" inputmode="numeric" maxlength="1" data-index="0"
+                        class="otp-input w-8 h-10 sm:w-10 sm:h-12 text-center text-lg sm:text-xl font-bold text-white bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all flex-shrink-0" />
+                    <input type="text" inputmode="numeric" maxlength="1" data-index="1"
+                        class="otp-input w-8 h-10 sm:w-10 sm:h-12 text-center text-lg sm:text-xl font-bold text-white bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all flex-shrink-0" />
+                    <input type="text" inputmode="numeric" maxlength="1" data-index="2"
+                        class="otp-input w-8 h-10 sm:w-10 sm:h-12 text-center text-lg sm:text-xl font-bold text-white bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all flex-shrink-0" />
+                    <input type="text" inputmode="numeric" maxlength="1" data-index="3"
+                        class="otp-input w-8 h-10 sm:w-10 sm:h-12 text-center text-lg sm:text-xl font-bold text-white bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all flex-shrink-0" />
+                    <input type="text" inputmode="numeric" maxlength="1" data-index="4"
+                        class="otp-input w-8 h-10 sm:w-10 sm:h-12 text-center text-lg sm:text-xl font-bold text-white bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all flex-shrink-0" />
+                    <input type="text" inputmode="numeric" maxlength="1" data-index="5"
+                        class="otp-input w-8 h-10 sm:w-10 sm:h-12 text-center text-lg sm:text-xl font-bold text-white bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all flex-shrink-0" />
+                </div>
+
+                <!-- Verify Button -->
+                <button type="submit" id="verifyBtn"
+                    class="w-full py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <span>Verify Code</span>
+                </button>
+            </form>
+
+            <!-- Resend Code -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-400 mb-2">Didn't receive the code?</p>
+                <button type="button" id="resendBtn" onclick="handleResend()"
+                    class="flex items-center justify-center gap-2 mx-auto text-purple-400 hover:text-purple-300 transition-colors disabled:text-gray-500 disabled:cursor-not-allowed">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    <span id="resendText">Resend Code</span>
+                </button>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-6 pt-6 border-t border-white/10">
+                <a href="/signup"
+                    class="flex items-center justify-center gap-2 mx-auto text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to Sign Up
+                </a>
+            </div>
+        </div>
+
+        <!-- Help Text -->
+        <p class="text-center text-gray-500 text-sm mt-8">
+            Check your spam folder if you don't see the email in your inbox.
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let countdown = 60;
+let isLoading = false;
+let isResending = false;
+
+const email = document.getElementById('userEmail').textContent.trim();
+const inputs = document.querySelectorAll('.otp-input');
+const verifyBtn = document.getElementById('verifyBtn');
+const resendBtn = document.getElementById('resendBtn');
+const resendText = document.getElementById('resendText');
+
+// Initialize inputs
+inputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        // Only allow digits
+        if (!/^\d*$/.test(e.target.value)) {
+            e.target.value = '';
+            return;
+        }
+        
+        // Take only last character
+        if (e.target.value.length > 1) {
+            e.target.value = e.target.value.slice(-1);
+        }
+        
+        // Auto-focus next input
+        if (e.target.value && index < 5) {
+            inputs[index + 1].focus();
+        }
+        
+        // Check if all filled
+        checkComplete();
+    });
+    
+    input.addEventListener('keydown', (e) => {
+        // Handle backspace
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+            inputs[index - 1].focus();
+        }
+    });
+    
+    input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+        
+        for (let i = 0; i < pasted.length && i < 6; i++) {
+            inputs[i].value = pasted[i];
+        }
+        
+        // Focus appropriate input
+        const focusIndex = Math.min(pasted.length, 5);
+        inputs[focusIndex].focus();
+        
+        checkComplete();
+    });
+});
+
+function checkComplete() {
+    const otp = Array.from(inputs).map(i => i.value).join('');
+    if (otp.length === 6) {
+        verifyOtp(otp);
+    }
+}
+
+async function verifyOtp(otpCode) {
+    if (isLoading) return;
+    isLoading = true;
+    
+    verifyBtn.disabled = true;
+    verifyBtn.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div><span>Verifying...</span>';
+    
+    // Debug: Check email value
+    const emailElement = document.getElementById('userEmail');
+    const email = emailElement ? emailElement.textContent.trim() : '';
+    console.log('Email from page:', email);
+    console.log('OTP Code:', otpCode);
+    
+    if (!email) {
+        alert('Email not found. Please go back to signup.');
+        isLoading = false;
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i><span>Verify Code</span>';
+        return;
+    }
+    
+    try {
+        const params = new URLSearchParams();
+        params.append('email', email);
+        params.append('otp_code', otpCode);
+        
+        console.log('Sending OTP verification with params:', params.toString());
+        
+        const response = await axios.post('/api/v1/auth/verify-otp', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        
+        console.log('Verify OTP response:', response.data);
+        
+        alert('Email verified successfully!');
+        
+        // Redirect to dashboard or login
+        window.location.href = '/login';
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        console.error('Error response:', error.response?.data);
+        
+        let errorMsg = 'Invalid verification code';
+        if (error.response?.data?.detail) {
+            errorMsg = error.response.data.detail;
+        } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+        }
+        alert(errorMsg);
+        
+        // Clear inputs
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
+    } finally {
+        isLoading = false;
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i><span>Verify Code</span>';
+        lucide.createIcons();
+    }
+}
+
+async function handleResend() {
+    if (countdown > 0 || isResending) return;
+    
+    isResending = true;
+    resendBtn.disabled = true;
+    
+    try {
+        const params = new URLSearchParams();
+        params.append('email', email);
+        
+        await axios.post('/api/v1/auth/resend-otp?_=' + Date.now(), params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        alert('New verification code sent!');
+        countdown = 60;
+        startCountdown();
+        
+        // Clear inputs
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
+    } catch (error) {
+        console.error('Resend error:', error);
+        let errorMsg = 'Failed to resend code';
+        if (error.response?.data?.detail) {
+            const detail = error.response.data.detail;
+            if (Array.isArray(detail)) {
+                errorMsg = detail.map(e => e.msg || e.message || JSON.stringify(e)).join('\n');
+            } else if (typeof detail === 'string') {
+                errorMsg = detail;
+            } else {
+                errorMsg = detail.message || JSON.stringify(detail);
+            }
+        } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+        }
+        alert(errorMsg);
+    } finally {
+        isResending = false;
+    }
+}
+
+function startCountdown() {
+    resendBtn.disabled = true;
+    resendText.textContent = 'Resend in ' + countdown + 's';
+    
+    const timer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            resendText.textContent = 'Resend in ' + countdown + 's';
+        } else {
+            clearInterval(timer);
+            resendBtn.disabled = false;
+            resendText.textContent = 'Resend Code';
+        }
+    }, 1000);
+}
+
+document.getElementById('otpForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const otp = Array.from(inputs).map(i => i.value).join('');
+    if (otp.length === 6) {
+        verifyOtp(otp);
+    } else {
+        alert('Please enter all 6 digits');
+    }
+});
+
+// Focus first input on load
+inputs[0].focus();
+
+// Start countdown
+startCountdown();
+</script>
+{% endblock %}

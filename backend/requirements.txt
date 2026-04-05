@@ -1,0 +1,40 @@
+alembic==1.13.1
+asyncpg==0.29.0
+fastapi==0.109.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+python-multipart==0.0.6
+sqlalchemy==2.0.25
+uvicorn[standard]==0.27.0
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Database
+alembic==1.13.1
+psycopg2-binary==2.9.9
+sqlite3
+
+# API Clients
+httpx==0.26.0
+requests==2.31.0
+aiohttp==3.9.1
+
+# Audio Processing
+pydub==0.25.1
+librosa==0.10.1
+soundfile==0.12.1
+
+# Security & Watermarking
+pycryptodome==3.20.0
+stegano==0.11.3
+
+# Utilities
+python-magic==0.4.27
+tqdm==4.66.1
+celery==5.3.6
+redis==5.0.1
+stripe==7.10.0

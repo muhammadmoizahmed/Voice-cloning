@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0f] text-white relative overflow-hidden flex">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <!-- Glassmorphism Sidebar -->
+    <aside class="w-72 glass-strong flex-shrink-0 border-r border-white/10 relative z-10">
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-white/10">
+            <a href="/admin" class="flex items-center space-x-3 group text-decoration-none">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold text-white">VoiceForge</span>
+                    <span class="text-xs text-purple-400 block font-medium">Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="/admin" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border border-white/10 shadow-lg">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 text-purple-400"></i>
+                <span class="font-medium">Dashboard</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-purple-400"></i>
+            </a>
+            <a href="/admin/users" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="users" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">User Management</span>
+            </a>
+            <a href="/admin/voices" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="mic" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Voice Moderation</span>
+            </a>
+            <a href="/admin/sub-admins" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="crown" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Sub-Admins</span>
+            </a>
+            <a href="/admin/plans" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="credit-card" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Plan Management</span>
+            </a>
+            <a href="/admin/settings" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="settings" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Settings</span>
+            </a>
+        </nav>
+
+        <!-- Admin Info Card -->
+        <div class="mt-auto p-4">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">A</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-medium truncate">Administrator</p>
+                        <p class="text-xs text-purple-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="p-4 pt-0">
+            <a href="/admin/logout" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-xl transition-all duration-300 group text-decoration-none">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:text-red-400 transition-colors"></i>
+                <span>Admin Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-auto relative z-10">
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 glass border-b border-white/10 px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
+                    <p class="text-sm text-gray-400">Manage your platform efficiently</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="h-8 w-px bg-white/10"></div>
+                    <a href="/dashboard" class="text-sm text-gray-400 hover:text-white transition-colors text-decoration-none">
+                        Back to App →
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="p-8 space-y-8">
+            <!-- Header with Time Range -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Admin Dashboard</h2>
+                    <p class="text-gray-400 mt-1">Complete platform overview and analytics</p>
+                </div>
+                <select id="timeRange" class="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-purple-500 outline-none">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="365">Last Year</option>
+                </select>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            </div>
+
+            <!-- Dashboard Content (hidden initially) -->
+            <div id="dashboardContent" class="hidden space-y-8">
+                <!-- Main Stats Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="statsGrid">
+                    <!-- Stats will be loaded here -->
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">Quick Actions</h3>
+                    <div class="grid md:grid-cols-5 gap-4">
+                        <a href="/admin/users" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group text-decoration-none">
+                            <i data-lucide="users" class="w-8 h-8 text-blue-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="font-medium text-white">Manage Users</p>
+                            <p class="text-sm text-gray-400">View and manage all users</p>
+                        </a>
+                        <a href="/admin/voices" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group text-decoration-none">
+                            <i data-lucide="mic" class="w-8 h-8 text-purple-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="font-medium text-white">Voice Moderation</p>
+                            <p class="text-sm text-gray-400">Verify voice ownership</p>
+                        </a>
+                        <a href="/admin/sub-admins" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group text-decoration-none">
+                            <i data-lucide="crown" class="w-8 h-8 text-yellow-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="font-medium text-white">Sub-Admins</p>
+                            <p class="text-sm text-gray-400">Create & manage staff</p>
+                        </a>
+                        <a href="/admin/plans" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group text-decoration-none">
+                            <i data-lucide="credit-card" class="w-8 h-8 text-orange-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="font-medium text-white">Manage Plans</p>
+                            <p class="text-sm text-gray-400">Change user plans</p>
+                        </a>
+                        <a href="/admin/settings" class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group text-decoration-none">
+                            <i data-lucide="key" class="w-8 h-8 text-green-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="font-medium text-white">Change Password</p>
+                            <p class="text-sm text-gray-400">Update admin password</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Role Access Levels Info -->
+                <div class="glass-card rounded-2xl p-6 border border-yellow-500/20">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="shield" class="w-5 h-5 text-yellow-400"></i>
+                        Access Levels & Permissions
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Administrator -->
+                        <div class="p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="crown" class="w-5 h-5 text-purple-400"></i>
+                                <h4 class="font-semibold text-white">Administrator (Full Access)</h4>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-300">
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Create & manage sub-admins/moderators</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Delete any user including admins</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> View all analytics & financial reports</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Manage user roles (promote/demote)</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Voice moderation & verification</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Change own password</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Full system configuration access</li>
+                            </ul>
+                        </div>
+                        <!-- Moderator -->
+                        <div class="p-4 bg-blue-500/10 rounded-xl border border-blue-500/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="shield" class="w-5 h-5 text-blue-400"></i>
+                                <h4 class="font-semibold text-white">Moderator (Limited Access)</h4>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-300">
+                                <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Cannot create sub-admins</li>
+                                <li class="flex items-center gap-2"><span class="text-red-400">✗</span> Cannot delete admin users</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> View analytics & reports</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Suspend/activate regular users</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Voice moderation & verification</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Change own password</li>
+                                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Manage user-generated content</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set up axios defaults with auth token
+const token = localStorage.getItem('token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
+async function fetchDashboardData() {
+    try {
+        const response = await axios.get('/api/v1/admin/stats');
+        const data = response.data;
+        
+        // Hide loading, show content
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('dashboardContent').classList.remove('hidden');
+        
+        // Render stats
+        const statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML = `
+            <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total Users</p>
+                        <p class="text-3xl font-bold text-white mt-1">${data.total_users || 0}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="users" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total Voices</p>
+                        <p class="text-3xl font-bold text-white mt-1">${data.total_voices || 0}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="mic" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total Generations</p>
+                        <p class="text-3xl font-bold text-white mt-1">${data.total_generations || 0}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="activity" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 hover:scale-[1.02] transition-transform">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Platform Status</p>
+                        <p class="text-3xl font-bold text-green-400 mt-1">Active</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="server" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        lucide.createIcons();
+    } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        let errorMsg = 'Failed to load dashboard data';
+        if (error.response) {
+            errorMsg += ' (Status: ' + error.response.status + ')';
+            console.log('Response data:', error.response.data);
+        }
+        document.getElementById('loadingState').innerHTML = '<p class="text-red-400">' + errorMsg + '</p>';
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', fetchDashboardData);
+</script>
+{% endblock %}

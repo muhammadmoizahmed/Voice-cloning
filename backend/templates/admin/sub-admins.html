@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Sub-Admin Management - VoiceForge AI Admin{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0f] text-white relative overflow-hidden flex">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <!-- Glassmorphism Sidebar -->
+    <aside class="w-72 glass-strong flex-shrink-0 border-r border-white/10 relative z-10">
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-white/10">
+            <a href="/admin" class="flex items-center space-x-3 group text-decoration-none">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold text-white">VoiceForge</span>
+                    <span class="text-xs text-purple-400 block font-medium">Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="/admin" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="/admin/users" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="users" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">User Management</span>
+            </a>
+            <a href="/admin/voices" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="mic" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Voice Moderation</span>
+            </a>
+            <a href="/admin/plans" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="credit-card" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Plan Management</span>
+            </a>
+            <a href="/admin/sub-admins" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border border-white/10 shadow-lg">
+                <i data-lucide="crown" class="w-5 h-5 text-purple-400"></i>
+                <span class="font-medium">Sub-Admins</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-purple-400"></i>
+            </a>
+            <a href="/admin/settings" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="settings" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Settings</span>
+            </a>
+        </nav>
+
+        <!-- Admin Info Card -->
+        <div class="mt-auto p-4">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">A</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-medium truncate">Administrator</p>
+                        <p class="text-xs text-purple-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="p-4 pt-0">
+            <a href="/admin/logout" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-xl transition-all duration-300 group text-decoration-none">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:text-red-400 transition-colors"></i>
+                <span>Admin Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-auto relative z-10">
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 glass border-b border-white/10 px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Sub-Admin Management</h1>
+                    <p class="text-sm text-gray-400">Create and manage moderator/sub-admin users</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="h-8 w-px bg-white/10"></div>
+                    <a href="/dashboard" class="text-sm text-gray-400 hover:text-white transition-colors text-decoration-none">
+                        Back to App →
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sub-Admins Content -->
+        <div class="p-8 space-y-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Sub-Admin Management</h2>
+                    <p class="text-gray-400 mt-1">Create and manage moderator/sub-admin users</p>
+                </div>
+                <button onclick="openCreateModal()" class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    Create Sub-Admin
+                </button>
+            </div>
+
+            <!-- Info Card -->
+            <div class="glass-card rounded-2xl p-6 border border-yellow-500/20">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-yellow-500/10 rounded-xl">
+                        <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Role Hierarchy</h3>
+                        <div class="space-y-2 text-gray-400">
+                            <p class="flex items-center gap-2">
+                                <i data-lucide="crown" class="w-4 h-4 text-purple-400"></i>
+                                <span class="font-medium text-white">Admin:</span> Full access - can create sub-admins, manage everything
+                            </p>
+                            <p class="flex items-center gap-2">
+                                <i data-lucide="shield" class="w-4 h-4 text-blue-400"></i>
+                                <span class="font-medium text-white">Moderator:</span> Limited access - can manage users, voices, view analytics
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Admins List -->
+            <div class="glass-card rounded-2xl border border-white/10 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-white/5 border-b border-white/10">
+                            <tr>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">User</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Role</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Status</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Created</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-gray-300">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subAdminsTable" class="divide-y divide-white/5">
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                                    Loading sub-admins...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Create Sub-Admin Modal -->
+<div id="createModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+    <div class="glass-card rounded-2xl p-8 w-full max-w-md border border-purple-500/30">
+        <h2 class="text-2xl font-bold text-white mb-6">Create Sub-Admin</h2>
+        
+        <form id="createForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    <i data-lucide="user" class="w-4 h-4 inline mr-2"></i>
+                    Full Name
+                </label>
+                <input type="text" name="full_name" required
+                    class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    placeholder="John Doe" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    <i data-lucide="mail" class="w-4 h-4 inline mr-2"></i>
+                    Email
+                </label>
+                <input type="email" name="email" required
+                    class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    placeholder="moderator@voiceforge.ai" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>
+                    Password
+                </label>
+                <input type="password" name="password" required minlength="8"
+                    class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    placeholder="Enter secure password" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    <i data-lucide="shield" class="w-4 h-4 inline mr-2"></i>
+                    Role
+                </label>
+                <select name="role" required
+                    class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all cursor-pointer">
+                    <option value="moderator" class="bg-gray-800">Moderator (Limited Access)</option>
+                    <option value="admin" class="bg-gray-800">Administrator (Full Access)</option>
+                </select>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+                <button type="button" onclick="closeCreateModal()"
+                    class="flex-1 py-3 bg-gray-600/50 text-white rounded-xl font-medium hover:bg-gray-600 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="flex-1 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all">
+                    Create User
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set up axios defaults with auth token
+const token = localStorage.getItem('token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
+async function fetchSubAdmins() {
+    try {
+        const response = await axios.get('/api/v1/admin/sub-admins');
+        const subAdmins = response.data.sub_admins || [];
+        const table = document.getElementById('subAdminsTable');
+        
+        if (subAdmins.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center">
+                        <i data-lucide="users" class="w-16 h-16 text-gray-500 mx-auto mb-4"></i>
+                        <h3 class="text-lg font-medium text-white mb-2">No sub-admins found</h3>
+                        <p class="text-gray-400">Create your first sub-admin to help manage the platform</p>
+                    </td>
+                </tr>
+            `;
+            lucide.createIcons();
+            return;
+        }
+        
+        table.innerHTML = subAdmins.map(user => `
+            <tr class="hover:bg-white/5 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">${user.full_name ? user.full_name.charAt(0) : 'U'}</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-white">${user.full_name}</p>
+                            <p class="text-sm text-gray-400">${user.email}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border ${user.role === 'admin' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30'}">
+                        ${user.role === 'admin' 
+                            ? '<i data-lucide="crown" class="w-3 h-3"></i> Administrator' 
+                            : '<i data-lucide="shield" class="w-3 h-3"></i> Moderator'}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full border ${user.is_active ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}">
+                        ${user.is_active ? 'Active' : 'Suspended'}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-400">
+                    ${new Date(user.created_at).toLocaleDateString()}
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        ${user.is_active 
+                            ? `<button onclick="userAction('${user.id}', 'suspend')" class="p-2 text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10 rounded-lg transition-colors" title="Suspend"><i data-lucide="user-x" class="w-4 h-4"></i></button>`
+                            : `<button onclick="userAction('${user.id}', 'activate')" class="p-2 text-gray-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-colors" title="Activate"><i data-lucide="user-check" class="w-4 h-4"></i></button>`
+                        }
+                        <button onclick="userAction('${user.id}', 'delete')" class="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors" title="Delete">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+        
+        lucide.createIcons();
+    } catch (error) {
+        console.error('Error fetching sub-admins:', error);
+        document.getElementById('subAdminsTable').innerHTML = `
+            <tr>
+                <td colspan="5" class="px-6 py-12 text-center text-red-400">
+                    Failed to load sub-admins
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function openCreateModal() {
+    document.getElementById('createModal').classList.remove('hidden');
+}
+
+function closeCreateModal() {
+    document.getElementById('createModal').classList.add('hidden');
+    document.getElementById('createForm').reset();
+}
+
+document.getElementById('createForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const params = new URLSearchParams();
+        params.append('email', data.email);
+        params.append('full_name', data.full_name);
+        params.append('password', data.password);
+        params.append('role', data.role || 'moderator');
+        
+        await axios.post('/api/v1/admin/create-sub-admin', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        alert('Sub-admin created successfully');
+        closeCreateModal();
+        fetchSubAdmins();
+    } catch (error) {
+        console.error('Create sub-admin error:', error);
+        let errorMsg = 'Failed to create sub-admin';
+        if (error.response?.data?.detail) {
+            const detail = error.response.data.detail;
+            if (Array.isArray(detail)) {
+                errorMsg = detail.map(e => e.msg || e.message || JSON.stringify(e)).join('\n');
+            } else if (typeof detail === 'string') {
+                errorMsg = detail;
+            } else {
+                errorMsg = detail.message || JSON.stringify(detail);
+            }
+        } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+        }
+        alert(errorMsg);
+    }
+});
+
+async function userAction(userId, action) {
+    if (action === 'delete' && !confirm('Are you sure you want to delete this user?')) return;
+    
+    try {
+        await axios.post('/api/v1/admin/users/' + userId + '/action', { action });
+        alert('User ' + action + 'd successfully');
+        fetchSubAdmins();
+    } catch (error) {
+        console.error('Action error:', error);
+        let errorMsg = 'Action failed';
+        if (error.response?.data?.detail) {
+            const detail = error.response.data.detail;
+            if (Array.isArray(detail)) {
+                errorMsg = detail.map(e => e.msg || e.message || JSON.stringify(e)).join('\n');
+            } else if (typeof detail === 'string') {
+                errorMsg = detail;
+            } else {
+                errorMsg = detail.message || JSON.stringify(detail);
+            }
+        } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+        }
+        alert(errorMsg);
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', fetchSubAdmins);
+</script>
+{% endblock %}

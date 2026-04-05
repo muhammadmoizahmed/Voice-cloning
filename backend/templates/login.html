@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Login - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark text-white relative overflow-hidden flex items-center justify-center p-4">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="relative z-10 w-full max-w-md">
+        <div class="glass-card rounded-3xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-2">Welcome back</h2>
+            <p class="text-gray-400 mb-6">Sign in to your VoiceForge account</p>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="email"
+                            name="username"
+                            required
+                            class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            required
+                            class="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                            placeholder="••••••••"
+                        />
+                        <button
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                        >
+                            <i data-lucide="eye" class="w-5 h-5" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-white/30 bg-white/5 text-purple-500 focus:ring-purple-500">
+                        <span class="ml-2 text-sm text-gray-400">Remember me</span>
+                    </label>
+                </div>
+
+                <button
+                    type="submit"
+                    id="loginBtn"
+                    class="w-full btn-3d text-white py-3 rounded-xl font-semibold transition-all"
+                >
+                    Sign In
+                </button>
+
+                <div class="flex justify-center">
+                    <a href="/forgot-password" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                        Forgot password?
+                    </a>
+                </div>
+            </form>
+
+            <p class="text-center mt-6 text-gray-400">
+                Don't have an account?
+                <a href="/signup" class="text-purple-400 hover:text-purple-300 font-medium">
+                    Sign up
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.querySelector('#toggleIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.setAttribute('data-lucide', 'eye-off');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.setAttribute('data-lucide', 'eye');
+    }
+    lucide.createIcons();
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const loginBtn = document.getElementById('loginBtn');
+    const originalText = loginBtn.textContent;
+    
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in...';
+    
+    try {
+        const formData = new FormData(this);
+        const params = new URLSearchParams();
+        params.append('username', formData.get('username'));
+        params.append('password', formData.get('password'));
+        
+        console.log('Sending login:', { username: formData.get('username'), password: '***' });
+        
+        const response = await axios.post('/api/v1/auth/login', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        
+        console.log('Login response:', response.data);
+        
+        if (response.data.access_token) {
+            // Store token in localStorage and cookie (Lax allows navigation)
+            localStorage.setItem('token', response.data.access_token);
+            document.cookie = `access_token=${response.data.access_token}; path=/; max-age=86400; SameSite=Lax`;
+            window.location.href = '/dashboard';
+        } else if (response.data.requires_otp) {
+            // Need OTP verification
+            alert(response.data.message);
+            window.location.href = '/verify-otp?email=' + encodeURIComponent(response.data.email);
+        } else {
+            let errorMsg = 'Login failed. Please try again.';
+            if (response.data.detail) {
+                const detail = response.data.detail;
+                if (Array.isArray(detail)) {
+                    errorMsg = detail.map(e => e.msg || e.message || JSON.stringify(e)).join('\n');
+                } else if (typeof detail === 'string') {
+                    errorMsg = detail;
+                } else {
+                    errorMsg = detail.message || JSON.stringify(detail);
+                }
+            }
+            alert(errorMsg);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        console.error('Error response:', error.response?.data);
+        
+        let errorMsg = 'Login failed. Please try again.';
+        if (error.response?.data?.detail) {
+            errorMsg = error.response.data.detail;
+        } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+        } else if (error.message) {
+            errorMsg = error.message;
+        }
+        
+        alert(errorMsg);
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
+    }
+});
+</script>
+{% endblock %}

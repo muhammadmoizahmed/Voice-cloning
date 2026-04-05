@@ -1,0 +1,97 @@
+# VoiceForge AI - Docker Deployment
+
+version: '3.8'
+
+services:
+  voiceforge:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: voiceforge-app
+    ports:
+      - "8002:8002"
+      - "8003:8003"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/outputs:/app/outputs
+      - ./backend/voiceforge.db:/app/voiceforge.db
+    environment:
+      # Database
+      - DATABASE_URL=sqlite:///./voiceforge.db
+      
+      # JWT Secret (change in production!)
+      - JWT_SECRET_KEY=demo-secret-key-change-in-production
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRATION_HOURS=24
+      
+      # External API Keys (empty for demo mode)
+      - ELEVENLABS_API_KEY=
+      - FISH_AUDIO_API_KEY=
+      - RESEMBLE_API_KEY=
+      
+      # Stripe Payment (empty for demo mode)
+      - STRIPE_SECRET_KEY=
+      - STRIPE_PUBLISHABLE_KEY=
+      - STRIPE_WEBHOOK_SECRET=
+      
+      # Email Configuration (demo mode)
+      - SMTP_SERVER=
+      - SMTP_PORT=587
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - FROM_EMAIL=noreply@voiceforge.ai
+      - FROM_NAME=VoiceForge AI
+      
+      # File Storage
+      - UPLOAD_DIR=uploads
+      - OUTPUT_DIR=outputs
+      - MAX_UPLOAD_SIZE=52428800
+      
+      # Frontend URL
+      - FRONTEND_URL=http://localhost:8003
+      
+      # Security
+      - WATERMARK_ENABLED=true
+      - REQUIRE_VOICE_OWNERSHIP=false
+      
+      # Demo Mode Settings
+      - DEMO_MODE=true
+      - MOCK_API_CALLS=true
+      - SKIP_EXTERNAL_APIS=true
+      - DEBUG=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    image: nginx:alpine
+    container_name: voiceforge-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./backend/uploads:/var/www/uploads:ro
+      - ./backend/outputs:/var/www/outputs:ro
+    depends_on:
+      - voiceforge
+    restart: unless-stopped
+    networks:
+      - voiceforge-network
+
+networks:
+  voiceforge-network:
+    driver: bridge
+
+volumes:
+  uploads:
+    driver: local
+  outputs:
+    driver: local
+  database:
+    driver: local

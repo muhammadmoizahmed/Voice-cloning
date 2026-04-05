@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Settings - VoiceForge AI Admin{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0f] text-white relative overflow-hidden flex">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <!-- Glassmorphism Sidebar -->
+    <aside class="w-72 glass-strong flex-shrink-0 border-r border-white/10 relative z-10">
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-white/10">
+            <a href="/admin" class="flex items-center space-x-3 group text-decoration-none">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold text-white">VoiceForge</span>
+                    <span class="text-xs text-purple-400 block font-medium">Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="/admin" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="/admin/users" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="users" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">User Management</span>
+            </a>
+            <a href="/admin/voices" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="mic" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Voice Moderation</span>
+            </a>
+            <a href="/admin/sub-admins" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="crown" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Sub-Admins</span>
+            </a>
+            <a href="/admin/plans" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="credit-card" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Plan Management</span>
+            </a>
+            <a href="/admin/settings" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border border-white/10 shadow-lg">
+                <i data-lucide="settings" class="w-5 h-5 text-purple-400"></i>
+                <span class="font-medium">Settings</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-purple-400"></i>
+            </a>
+        </nav>
+
+        <!-- Admin Info Card -->
+        <div class="mt-auto p-4">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">A</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-medium truncate">Administrator</p>
+                        <p class="text-xs text-purple-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="p-4 pt-0">
+            <a href="/admin/logout" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-xl transition-all duration-300 group text-decoration-none">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:text-red-400 transition-colors"></i>
+                <span>Admin Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-auto relative z-10">
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 glass border-b border-white/10 px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Admin Settings</h1>
+                    <p class="text-sm text-gray-400">Manage your account and security</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="h-8 w-px bg-white/10"></div>
+                    <a href="/dashboard" class="text-sm text-gray-400 hover:text-white transition-colors text-decoration-none">
+                        Back to App →
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="p-8 space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Profile Info Card -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="user" class="w-5 h-5 text-purple-400"></i>
+                        Profile Information
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-xl">A</span>
+                            </div>
+                            <div>
+                                <p class="text-lg font-semibold text-white">Administrator</p>
+                                <p class="text-sm text-gray-400">admin@voiceforge.com</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-white/10 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 flex items-center gap-2">
+                                    <i data-lucide="mail" class="w-4 h-4"></i>
+                                    Email
+                                </span>
+                                <span class="text-white">admin@voiceforge.com</span>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 flex items-center gap-2">
+                                    <i data-lucide="shield" class="w-4 h-4"></i>
+                                    Role
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border bg-purple-500/20 text-purple-400 border-purple-500/30">
+                                    Administrator
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 flex items-center gap-2">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                    Status
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border bg-green-500/20 text-green-400 border-green-500/30">
+                                    Active
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password Card -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="key" class="w-5 h-5 text-green-400"></i>
+                        Change Password
+                    </h3>
+
+                    <form id="passwordForm" class="space-y-4">
+                        <!-- Current Password -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Current Password
+                            </label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input
+                                    type="password"
+                                    id="currentPassword"
+                                    name="current_password"
+                                    class="w-full pl-12 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Enter current password"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onclick="togglePassword('currentPassword', 'toggleCurrent')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                >
+                                    <i data-lucide="eye" class="w-5 h-5" id="toggleCurrent"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New Password -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                New Password
+                            </label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    name="new_password"
+                                    class="w-full pl-12 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Enter new password (min 8 chars)"
+                                    required
+                                    minlength="8"
+                                />
+                                <button
+                                    type="button"
+                                    onclick="togglePassword('newPassword', 'toggleNew')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                >
+                                    <i data-lucide="eye" class="w-5 h-5" id="toggleNew"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Confirm New Password -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Confirm New Password
+                            </label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirm_password"
+                                    class="w-full pl-12 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Confirm new password"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onclick="togglePassword('confirmPassword', 'toggleConfirm')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                >
+                                    <i data-lucide="eye" class="w-5 h-5" id="toggleConfirm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Password Requirements -->
+                        <div class="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                            <div class="flex items-start gap-2">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5"></i>
+                                <div class="text-sm text-yellow-400">
+                                    <p class="font-medium mb-1">Password Requirements:</p>
+                                    <ul class="space-y-1 text-yellow-400/80">
+                                        <li>• At least 8 characters long</li>
+                                        <li>• Should include uppercase and lowercase letters</li>
+                                        <li>• Should include numbers and special characters</li>
+                                        <li>• You will be logged out after changing password</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-green-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            <i data-lucide="save" class="w-5 h-5"></i>
+                            <span>Change Password</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Tips -->
+            <div class="glass-card rounded-2xl p-6 border border-blue-500/20">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="shield" class="w-5 h-5 text-blue-400"></i>
+                    Security Tips
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-400">
+                    <div class="space-y-2">
+                        <p class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+                            Use a unique password that you don't use on other sites
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+                            Enable 2FA if available for extra security
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+                            Never share your admin credentials with anyone
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+                            Log out when you're done using the admin panel
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set up axios defaults with auth token
+const token = localStorage.getItem('token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
+function togglePassword(inputId, toggleId) {
+    const input = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        toggle.setAttribute('data-lucide', 'eye-off');
+    } else {
+        input.type = 'password';
+        toggle.setAttribute('data-lucide', 'eye');
+    }
+    lucide.createIcons();
+}
+
+document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const originalText = btn.innerHTML;
+    
+    const formData = new FormData(this);
+    const currentPassword = formData.get('current_password');
+    const newPassword = formData.get('new_password');
+    const confirmPassword = formData.get('confirm_password');
+    
+    if (newPassword !== confirmPassword) {
+        alert('New password and confirm password do not match');
+        return;
+    }
+    
+    if (newPassword.length < 8) {
+        alert('New password must be at least 8 characters long');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div><span>Updating...</span>';
+    
+    try {
+        await axios.post('/api/v1/admin/change-password', {
+            current_password: currentPassword,
+            new_password: newPassword
+        });
+        
+        alert('Password changed successfully. You will be logged out.');
+        this.reset();
+        
+        setTimeout(() => {
+            window.location.href = '/admin/logout';
+        }, 3000);
+    } catch (error) {
+        let errorMsg = 'Failed to change password';
+        if (error.response?.data) {
+            const data = error.response.data;
+            if (Array.isArray(data)) {
+                errorMsg = data.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
+            } else if (typeof data === 'object' && data !== null) {
+                errorMsg = data.detail || data.message || JSON.stringify(data);
+            } else {
+                errorMsg = String(data);
+            }
+        } else if (error.message) {
+            errorMsg = error.message;
+        }
+        alert(errorMsg);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+});
+</script>
+{% endblock %}

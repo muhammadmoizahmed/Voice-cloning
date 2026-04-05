@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Upgrade Plan - VoiceForge AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0f] text-white relative overflow-hidden flex">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-600/15 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- Glassmorphism Sidebar -->
+    <aside class="w-72 glass-strong flex-shrink-0 border-r border-white/10 relative z-10">
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-white/10">
+            <a href="/" class="flex items-center space-x-3 group text-decoration-none">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25">
+                    <i data-lucide="mic" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold text-white">VoiceForge</span>
+                    <span class="text-xs text-purple-400 block font-medium">AI Voice Cloning</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="/dashboard" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="/voices" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="mic" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Voice Library</span>
+            </a>
+            <a href="/generate" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="wand-2" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Generate Audio</span>
+            </a>
+            <a href="/avatar" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="video" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">AI Avatar Video</span>
+            </a>
+            <a href="/history" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="history" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">History</span>
+            </a>
+            <a href="/upgrade" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border border-white/10 shadow-lg">
+                <i data-lucide="trending-up" class="w-5 h-5 text-purple-400"></i>
+                <span class="font-medium">Upgrade Plan</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-purple-400"></i>
+            </a>
+            <a href="/settings" class="flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-gray-400 hover:bg-white/5 hover:text-white group">
+                <i data-lucide="settings" class="w-5 h-5 group-hover:text-purple-400 transition-colors"></i>
+                <span class="font-medium">Settings</span>
+            </a>
+        </nav>
+
+        <!-- User Info Card -->
+        <div class="mt-auto p-4">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">{{ user.full_name[0] if user.full_name else 'U' }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-medium truncate">{{ user.full_name }}</p>
+                        <p class="text-xs text-purple-400">{{ user.plan|capitalize }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="p-4 pt-0">
+            <a href="/logout" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-xl transition-all duration-300 group text-decoration-none">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:text-red-400 transition-colors"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-auto relative z-10">
+        <!-- Top Header -->
+        <header class="sticky top-0 z-20 glass border-b border-white/10 px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Upgrade Your Plan</h1>
+                    <p class="text-sm text-gray-400">Choose the perfect plan for your needs</p>
+                </div>
+                <div class="glass-card px-4 py-2 rounded-xl">
+                    <span class="text-sm text-gray-400">Current Plan:</span>
+                    <span class="text-sm font-bold text-white ml-1 capitalize">{{ user.plan }}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Pricing Content -->
+        <div class="p-8">
+            <!-- Current Plan Banner -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl flex items-center justify-center border border-purple-500/30">
+                            <i data-lucide="crown" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-400">You are currently on</p>
+                            <p class="text-xl font-bold text-white capitalize">{{ user.plan }} Plan</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-400">Credits Remaining</p>
+                        <p class="text-2xl font-bold text-white">{{ user.credits_remaining }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Free Plan -->
+                <div class="glass-card rounded-2xl border {{ 'border-purple-500 shadow-lg shadow-purple-500/20' if user.plan == 'free' else 'border-white/10' }} p-6 relative overflow-hidden">
+                    {% if user.plan == 'free' %}
+                    <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs px-3 py-1 rounded-bl-xl">Current</div>
+                    {% endif %}
+                    <div class="mb-4">
+                        <div class="w-8 h-1 bg-gray-600 rounded mb-4"></div>
+                        <h3 class="text-xl font-bold text-white mb-1">Free</h3>
+                        <p class="text-gray-500 text-xs">Try it out</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-purple-400">$0</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-gray-300"><span class="text-purple-400 font-bold text-lg">3</span> audio/total</p>
+                    </div>
+                    <ul class="space-y-2 mb-6 text-xs">
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>3 audio generations</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Basic quality</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Watermark</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Email support</span>
+                        </li>
+                    </ul>
+                    {% if user.plan == 'free' %}
+                    <button disabled class="w-full py-2.5 bg-gray-700 text-white rounded-lg font-medium cursor-not-allowed text-sm">Get Started</button>
+                    {% else %}
+                    <button onclick="downgradePlan('free')" class="w-full py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors text-sm">Downgrade</button>
+                    {% endif %}
+                </div>
+
+                <!-- Starter Plan -->
+                <div class="glass-card rounded-2xl border {{ 'border-purple-500 shadow-lg shadow-purple-500/20' if user.plan == 'starter' else 'border-white/10' }} p-6 relative overflow-hidden">
+                    {% if user.plan == 'starter' %}
+                    <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs px-3 py-1 rounded-bl-xl">Current</div>
+                    {% endif %}
+                    <div class="mb-4">
+                        <div class="w-8 h-1 bg-gray-600 rounded mb-4"></div>
+                        <h3 class="text-xl font-bold text-white mb-1">Starter</h3>
+                        <p class="text-gray-500 text-xs">Perfect start</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-purple-400">$5</span>
+                        <span class="text-gray-500 text-sm">/month</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-gray-300"><span class="text-purple-400 font-bold text-lg">50</span> audio/month</p>
+                    </div>
+                    <ul class="space-y-2 mb-6 text-xs">
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>50 audio/month</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>High quality</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>No watermark</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Priority support</span>
+                        </li>
+                    </ul>
+                    {% if user.plan == 'starter' %}
+                    <button disabled class="w-full py-2.5 bg-gray-700 text-white rounded-lg font-medium cursor-not-allowed text-sm">Start Starter</button>
+                    {% else %}
+                    <button onclick="upgradePlan('starter')" class="w-full py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors text-sm">Start Starter</button>
+                    {% endif %}
+                </div>
+
+                <!-- Pro Plan - Most Popular -->
+                <div class="glass-card rounded-2xl border {{ 'border-purple-500 shadow-lg shadow-purple-500/20' if user.plan == 'pro' else 'border-purple-500/50' }} p-6 relative overflow-hidden transform hover:scale-105 transition-transform">
+                    {% if user.plan == 'pro' %}
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-4 py-1 rounded-full shadow-lg shadow-purple-500/50">Most Popular</div>
+                    <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs px-3 py-1 rounded-bl-xl">Current</div>
+                    {% else %}
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-4 py-1 rounded-full shadow-lg shadow-purple-500/50">Most Popular</div>
+                    {% endif %}
+                    <div class="mb-4">
+                        <div class="w-8 h-1 bg-purple-500 rounded mb-4"></div>
+                        <h3 class="text-xl font-bold text-white mb-1">Pro</h3>
+                        <p class="text-gray-500 text-xs">For creators</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-purple-400">$15</span>
+                        <span class="text-gray-500 text-sm">/month</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-gray-300"><span class="text-purple-400 font-bold text-lg">200</span> audio/month</p>
+                    </div>
+                    <ul class="space-y-2 mb-6 text-xs">
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>200 audio/month</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Ultra quality</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>API access</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>24/7 support</span>
+                        </li>
+                    </ul>
+                    {% if user.plan == 'pro' %}
+                    <button disabled class="w-full py-2.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium cursor-not-allowed text-sm">Start Pro</button>
+                    {% else %}
+                    <button onclick="upgradePlan('pro')" class="w-full py-2.5 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-medium transition-all text-sm">Start Pro</button>
+                    {% endif %}
+                </div>
+
+                <!-- Business Plan -->
+                <div class="glass-card rounded-2xl border {{ 'border-purple-500 shadow-lg shadow-purple-500/20' if user.plan == 'business' else 'border-white/10' }} p-6 relative overflow-hidden">
+                    {% if user.plan == 'business' %}
+                    <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs px-3 py-1 rounded-bl-xl">Current</div>
+                    {% endif %}
+                    <div class="mb-4">
+                        <div class="w-8 h-1 bg-gray-600 rounded mb-4"></div>
+                        <h3 class="text-xl font-bold text-white mb-1">Business</h3>
+                        <p class="text-gray-500 text-xs">For teams</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-purple-400">$30</span>
+                        <span class="text-gray-500 text-sm">/month</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-gray-300"><span class="text-purple-400 font-bold text-lg">500</span> audio/month</p>
+                    </div>
+                    <ul class="space-y-2 mb-6 text-xs">
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>500 audio/month</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Ultra quality</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Full API</span>
+                        </li>
+                        <li class="flex items-center space-x-2 text-gray-400">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-purple-400"></i>
+                            <span>Team collaboration</span>
+                        </li>
+                    </ul>
+                    {% if user.plan == 'business' %}
+                    <button disabled class="w-full py-2.5 bg-gray-700 text-white rounded-lg font-medium cursor-not-allowed text-sm">Start Business</button>
+                    {% else %}
+                    <button onclick="upgradePlan('business')" class="w-full py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors text-sm">Start Business</button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6 mb-8">
+                <h3 class="text-lg font-bold text-white mb-4">Frequently Asked Questions</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="font-medium text-white mb-1">Can I cancel anytime?</p>
+                        <p class="text-sm text-gray-400">Yes, you can cancel your subscription at any time from your settings page.</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-white mb-1">What payment methods are accepted?</p>
+                        <p class="text-sm text-gray-400">We accept all major credit cards, PayPal, and Apple Pay.</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-white mb-1">Do unused credits roll over?</p>
+                        <p class="text-sm text-gray-400">No, credits reset at the beginning of each billing cycle.</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-white mb-1">Can I switch plans?</p>
+                        <p class="text-sm text-gray-400">Yes, you can upgrade or downgrade your plan at any time.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Credit Packages -->
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-purple-400 mb-2">Bulk Credit Packages</h2>
+                <p class="text-sm text-gray-400">No subscription needed - credits never expire!</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Basic Package -->
+                <div class="glass-card rounded-2xl border border-white/10 p-6 text-center hover:border-purple-500/50 transition-all">
+                    <div class="mb-4">
+                        <span class="text-3xl font-bold text-white">100</span>
+                        <span class="text-gray-400"> credits</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-purple-400">$10</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">$0.10 per credit</p>
+                    <button onclick="buyCredits(100, 10)" class="w-full py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors text-sm">Buy Now</button>
+                </div>
+
+                <!-- Popular Package -->
+                <div class="glass-card rounded-2xl border border-purple-500/50 p-6 text-center relative overflow-hidden hover:shadow-lg hover:shadow-purple-500/20 transition-all">
+                    <div class="absolute top-0 right-0 bg-purple-500 text-white text-xs px-3 py-1 rounded-bl-xl">Best Value</div>
+                    <div class="mb-4">
+                        <span class="text-3xl font-bold text-white">500</span>
+                        <span class="text-gray-400"> credits</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-purple-400">$40</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">$0.08 per credit</p>
+                    <button onclick="buyCredits(500, 40)" class="w-full py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-medium transition-all text-sm">Buy Now</button>
+                </div>
+
+                <!-- Pro Package -->
+                <div class="glass-card rounded-2xl border border-white/10 p-6 text-center hover:border-purple-500/50 transition-all">
+                    <div class="mb-4">
+                        <span class="text-3xl font-bold text-white">1000</span>
+                        <span class="text-gray-400"> credits</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-purple-400">$70</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">$0.07 per credit</p>
+                    <button onclick="buyCredits(1000, 70)" class="w-full py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors text-sm">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function upgradePlan(plan) {
+    // Show coming soon message
+    alert(`Upgrading to ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan coming soon! Payment integration in progress.`);
+}
+
+function downgradePlan(plan) {
+    if (confirm('Are you sure you want to downgrade to the Free plan? You will lose access to premium features.')) {
+        alert('Downgrade request submitted. Your plan will be updated at the end of the current billing cycle.');
+    }
+}
+
+function buyCredits(credits, price) {
+    alert(`Buying ${credits} credits for $${price} - Payment integration coming soon!`);
+}
+
+// Initialize icons
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+});
+</script>
+{% endblock %}
