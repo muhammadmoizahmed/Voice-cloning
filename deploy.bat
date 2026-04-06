@@ -25,8 +25,8 @@ if %errorlevel% neq 0 (
 
 REM Create necessary directories
 echo 📁 Creating directories...
-if not exist backend\uploads mkdir backend\uploads
-if not exist backend\outputs mkdir backend\outputs
+if not exist uploads mkdir uploads
+if not exist outputs mkdir outputs
 if not exist nginx\ssl mkdir nginx\ssl
 
 REM Copy demo environment file

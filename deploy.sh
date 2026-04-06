@@ -22,9 +22,7 @@ fi
 
 # Create necessary directories
 echo "📁 Creating directories..."
-mkdir -p backend/uploads
-mkdir -p backend/outputs
-mkdir -p nginx/ssl
+mkdir -p uploads outputs nginx/ssl
 
 # Copy demo environment file
 echo "⚙️ Setting up environment..."

@@ -6,12 +6,8 @@
 echo "🎭 Setting up VoiceForge AI Demo Mode"
 echo "====================================="
 
-# Navigate to backend directory
-cd backend
-
-# Create demo admin user
-echo "👤 Creating demo admin user..."
-python3 -c "
+# Navigate to project directory (already in root)
+cd backend && python3 -c "
 from app.database import SessionLocal, User, UserRole
 from app.utils.auth import hash_password
 import datetime
@@ -83,61 +79,9 @@ mkdir -p uploads/demo_voices
 echo "📁 Creating demo audio files..."
 mkdir -p outputs/demo_audio
 
-# Download or create demo files (placeholder)
-echo "🎵 Setting up demo audio samples..."
-cat > uploads/demo_voices/demo_voice_info.txt << EOF
-Demo Voice Files
-================
-
-This directory contains demo voice files for testing.
-In a real deployment, these would be actual voice recordings.
-
-Demo Voices:
-1. female_voice_1.wav - Female voice sample
-2. male_voice_1.wav - Male voice sample
-3. child_voice_1.wav - Child voice sample
-
-Note: These are placeholder files. In demo mode, the application
-will generate mock responses for voice cloning and audio generation.
-EOF
-
-# Create demo output files
-cat > outputs/demo_audio/demo_output_info.txt << EOF
-Demo Audio Outputs
-==================
-
-This directory contains demo audio generation outputs.
-In a real deployment, these would be generated audio files.
-
-Demo Outputs:
-1. welcome_message.mp3 - Welcome message demo
-2. sample_generation_1.mp3 - Sample audio generation
-3. test_tts_output.mp3 - Text-to-speech demo
-
-Note: These are placeholder files. In demo mode, the application
-will serve pre-generated demo files for audio generation requests.
-EOF
-
 # Create demo images directory
 echo "🖼️ Creating demo images..."
 mkdir -p uploads/demo_images
-
-# Create demo image info
-cat > uploads/demo_images/demo_image_info.txt << EOF
-Demo Images
-===========
-
-This directory contains demo images for avatar video generation.
-In a real deployment, these would be user-uploaded face images.
-
-Demo Images:
-1. face_sample_1.jpg - Female face sample
-2. face_sample_2.jpg - Male face sample
-3. avatar_demo.png - Avatar demo image
-
-Note: These are placeholder files. In demo mode, the application
-will use stock images or generate mock responses for avatar video requests.
-EOF
 
 echo "✅ Demo mode setup completed!"
 echo ""

@@ -5,16 +5,16 @@ version: '3.8'
 services:
   voiceforge:
     build: 
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: voiceforge-app
     ports:
       - "8002:8002"
       - "8003:8003"
     volumes:
-      - ./backend/uploads:/app/uploads
-      - ./backend/outputs:/app/outputs
-      - ./backend/voiceforge.db:/app/voiceforge.db
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
+      - ./voiceforge.db:/app/voiceforge.db
     environment:
       # Database
       - DATABASE_URL=sqlite:///./voiceforge.db
@@ -76,8 +76,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
-      - ./backend/uploads:/var/www/uploads:ro
-      - ./backend/outputs:/var/www/outputs:ro
+      - ./uploads:/var/www/uploads:ro
+      - ./outputs:/var/www/outputs:ro
     depends_on:
       - voiceforge
     restart: unless-stopped
