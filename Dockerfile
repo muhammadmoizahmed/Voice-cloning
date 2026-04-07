@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Copy requirements first for better caching
-COPY requirements-demo.txt requirements.txt
+COPY requirements-demo.txt ./requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
@@ -23,7 +23,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application code
 COPY backend/ .
-COPY .env.demo .env
+
+# Copy demo environment file
+COPY .env.demo ./.env
 
 # Create necessary directories with proper permissions
 RUN mkdir -p uploads outputs static && \

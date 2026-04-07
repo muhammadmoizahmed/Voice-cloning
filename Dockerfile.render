@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Copy Render production requirements
-COPY requirements-render.txt requirements.txt
+COPY requirements-render.txt ./requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
@@ -24,6 +24,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application code
 COPY backend/ .
+
+# Copy environment file if exists (optional)
+# COPY .env.render ./.env
 
 # Create data directories for Render disk
 RUN mkdir -p /data/uploads /data/outputs /data/static && \

@@ -91,9 +91,6 @@ services:
     # Health check endpoint
     healthCheckPath: /health
     
-    # Build command (optional)
-    buildCommand: pip install -r requirements-demo.txt
-    
     # Start command
     startCommand: ./render-start.sh
     
