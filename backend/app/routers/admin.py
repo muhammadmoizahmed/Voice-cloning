@@ -56,7 +56,13 @@ async def admin_login(
     """Admin login endpoint"""
     from app.database import UserRole
     
+    # Try with provided value (could be email or username)
     user = authenticate_user(db, data.username, data.password)
+    
+    # If not found and no @ in username, try appending default domain
+    if not user and "@" not in data.username:
+        user = authenticate_user(db, f"{data.username}@voiceforge.ai", data.password)
+    
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
