@@ -105,27 +105,19 @@ async def signup(user_data: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     
-    # Send OTP email
+    # Send OTP email (in demo mode, also return OTP in response)
     email_sent = email_service.send_otp_email(user.email, otp_code, user.full_name)
     
-    if not email_sent:
-        # For demo mode, show OTP in response if email fails
-        return {
-            "message": "Verification code (DEMO MODE - Email not configured): Use this code to verify",
-            "user_id": user.id,
-            "email": user.email,
-            "otp_code": otp_code,  # Show OTP in demo mode
-            "requires_verification": True,
-            "success": True,
-            "demo_mode": True
-        }
-    
+    # Always return OTP in response for demo/free tier
     return {
-        "message": "Verification code sent to your email. Please verify to complete registration.",
+        "message": "Verification code (DEMO MODE - Check terminal or use code below): Use this code to verify",
         "user_id": user.id,
         "email": user.email,
+        "otp_code": otp_code,  # Always show OTP in demo mode
         "requires_verification": True,
-        "success": True
+        "success": True,
+        "demo_mode": True,
+        "email_sent": email_sent
     }
 
 
