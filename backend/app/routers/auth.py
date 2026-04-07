@@ -109,10 +109,16 @@ async def signup(user_data: UserCreate, db: Session = Depends(get_db)):
     email_sent = email_service.send_otp_email(user.email, otp_code, user.full_name)
     
     if not email_sent:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to send verification email. Please try again."
-        )
+        # For demo mode, show OTP in response if email fails
+        return {
+            "message": "Verification code (DEMO MODE - Email not configured): Use this code to verify",
+            "user_id": user.id,
+            "email": user.email,
+            "otp_code": otp_code,  # Show OTP in demo mode
+            "requires_verification": True,
+            "success": True,
+            "demo_mode": True
+        }
     
     return {
         "message": "Verification code sent to your email. Please verify to complete registration.",
