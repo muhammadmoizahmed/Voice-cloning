@@ -31,6 +31,7 @@ email-validator==2.1.0
 
 # Security
 cryptography==42.0.8
+bcrypt==3.2.2  # Compatible with passlib
 
 # Utilities
 pydantic==2.5.0

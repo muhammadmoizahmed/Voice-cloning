@@ -25,10 +25,10 @@ try:
             sys.exit(0)
         
         print("🔄 Creating admin user...")
-        # Create admin - truncate password to 72 bytes for bcrypt
-        password = "admin123"[:72]
+        # Create admin - use simple password
+        password = "admin123"
         hashed = get_password_hash(password)
-        print(f"🔄 Password hashed (length: {len(hashed)})")
+        print(f"🔄 Password hashed successfully")
         admin = User(
             email="admin@voiceforge.ai",
             hashed_password=hashed,
