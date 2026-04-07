@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     stripe_publishable_key: str = ""
     
     # Email Configuration (for OTP & notifications)
-    smtp_server: str = "smtp.gmail.com"
+    smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 587
     smtp_username: str = ""
     smtp_password: str = ""
