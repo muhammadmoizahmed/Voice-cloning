@@ -28,15 +28,15 @@ COPY backend/ /app/
 # Copy environment file if exists (optional)
 # COPY .env.render ./.env
 
-# Create data directories for Render disk
-RUN mkdir -p /data/uploads /data/outputs /data/static && \
-    chmod 755 /data/uploads /data/outputs /data/static
+# Create /tmp directories for free tier storage
+RUN mkdir -p /tmp/uploads /tmp/outputs && \
+    chmod 755 /tmp/uploads /tmp/outputs
 
 # Create non-root user
 RUN useradd -m -u 1000 voiceforge
 
 # Change ownership
-RUN chown -R voiceforge:voiceforge /app /data
+RUN chown -R voiceforge:voiceforge /app /tmp
 
 # Switch to non-root user
 USER voiceforge

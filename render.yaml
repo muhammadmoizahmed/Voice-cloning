@@ -6,7 +6,7 @@ services:
   - type: web
     name: voiceforge-ai
     runtime: docker
-    plan: standard
+    plan: free
     dockerfilePath: ./Dockerfile.render
     dockerContext: .
     envVars:
@@ -62,11 +62,11 @@ services:
       - key: FROM_NAME
         value: VoiceForge AI
       
-      # File Storage (Render disk or cloud storage)
+      # File Storage (use /tmp for free tier)
       - key: UPLOAD_DIR
-        value: /data/uploads
+        value: /tmp/uploads
       - key: OUTPUT_DIR
-        value: /data/outputs
+        value: /tmp/outputs
       - key: MAX_UPLOAD_SIZE
         value: 52428800
       
@@ -90,12 +90,6 @@ services:
     
     # Health check endpoint
     healthCheckPath: /health
-    
-    # Disk for persistent storage (optional - for file uploads)
-    disk:
-      name: voiceforge-data
-      mountPath: /data
-      sizeGB: 10
 
 # PostgreSQL Database (Render Managed)
 databases:
