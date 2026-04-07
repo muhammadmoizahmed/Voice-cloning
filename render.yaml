@@ -100,6 +100,6 @@ services:
 # PostgreSQL Database (Render Managed)
 databases:
   - name: voiceforge-db
-    plan: starter
+    plan: free
     databaseName: voiceforge
     user: voiceforge
