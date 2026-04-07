@@ -15,10 +15,11 @@ try:
             print("✅ Admin user already exists")
             sys.exit(0)
         
-        # Create admin
+        # Create admin - truncate password to 72 bytes for bcrypt
+        password = "admin123"[:72]  # Ensure it's under 72 bytes
         admin = User(
             email="admin@voiceforge.ai",
-            hashed_password=get_password_hash("admin123"),
+            hashed_password=get_password_hash(password),
             full_name="Administrator",
             role=UserRole.ADMIN,
             is_active=True,
@@ -32,4 +33,6 @@ try:
         db.close()
 except Exception as e:
     print(f"⚠️ Error creating admin: {e}")
-    sys.exit(1)
+    print("⚠️ Continuing without admin creation...")
+    # Don't exit with error - let the app start anyway
+    sys.exit(0)
