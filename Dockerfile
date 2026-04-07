@@ -1,11 +1,8 @@
-# VoiceForge AI - Optimized Dockerfile
+# VoiceForge AI - Optimized Dockerfile for Render
 
 FROM python:3.9-slim
 
-# Set working directory
-WORKDIR /app
-
-# Install system dependencies
+# Install system dependencies first (as root)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     curl \
@@ -14,29 +11,34 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Copy requirements first for better caching
-COPY requirements-demo.txt ./requirements.txt
+# Set working directory
+WORKDIR /app
+
+# Copy requirements from build context to /app
+COPY requirements-demo.txt /app/requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy application code
-COPY backend/ .
+# Copy backend code to /app
+COPY backend/ /app/
 
-# Copy demo environment file
-COPY .env.demo ./.env
+# Copy environment file
+COPY .env.demo /app/.env
 
-# Create necessary directories with proper permissions
-RUN mkdir -p uploads outputs static && \
-    chmod 755 uploads outputs static && \
-    touch voiceforge.db && \
-    chmod 666 voiceforge.db
+# Create necessary directories
+RUN mkdir -p /app/uploads /app/outputs /app/static && \
+    chmod 755 /app/uploads /app/outputs /app/static
 
-# Create non-root user for security
-RUN useradd -m -u 1000 voiceforge && \
-    chown -R voiceforge:voiceforge /app && \
-    chmod 755 /app
+# Create database file with proper permissions
+RUN touch /app/voiceforge.db && chmod 666 /app/voiceforge.db
+
+# Create non-root user
+RUN useradd -m -u 1000 voiceforge
+
+# Change ownership of app directory
+RUN chown -R voiceforge:voiceforge /app
 
 # Switch to non-root user
 USER voiceforge

@@ -16,27 +16,27 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Copy Render production requirements
-COPY requirements-render.txt ./requirements.txt
+COPY requirements-render.txt /app/requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy application code
-COPY backend/ .
+COPY backend/ /app/
 
 # Copy environment file if exists (optional)
 # COPY .env.render ./.env
 
 # Create data directories for Render disk
 RUN mkdir -p /data/uploads /data/outputs /data/static && \
-    chmod 755 /data/uploads /data/outputs /data/static && \
-    chown -R 1000:1000 /data
+    chmod 755 /data/uploads /data/outputs /data/static
 
-# Create non-root user for security
-RUN useradd -m -u 1000 voiceforge && \
-    chown -R voiceforge:voiceforge /app && \
-    chmod 755 /app
+# Create non-root user
+RUN useradd -m -u 1000 voiceforge
+
+# Change ownership
+RUN chown -R voiceforge:voiceforge /app /data
 
 # Switch to non-root user
 USER voiceforge
