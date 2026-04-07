@@ -1,0 +1,55 @@
+# VoiceForge AI - Render Optimized Dockerfile
+# Optimized for Render.com deployment
+
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    curl \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy Render production requirements
+COPY requirements-render.txt requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY backend/ .
+
+# Create data directories for Render disk
+RUN mkdir -p /data/uploads /data/outputs /data/static && \
+    chmod 755 /data/uploads /data/outputs /data/static && \
+    chown -R 1000:1000 /data
+
+# Create non-root user for security
+RUN useradd -m -u 1000 voiceforge && \
+    chown -R voiceforge:voiceforge /app && \
+    chmod 755 /app
+
+# Switch to non-root user
+USER voiceforge
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8002
+
+# Expose port (Render uses PORT env var)
+EXPOSE 8002
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8002/health || exit 1
+
+# Render uses the PORT environment variable
+# Run the application
+CMD exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8002} --workers 1

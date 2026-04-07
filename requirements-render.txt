@@ -1,0 +1,51 @@
+# VoiceForge AI - Render Production Requirements
+
+# Core FastAPI Dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+jinja2==3.1.2
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.12.1
+psycopg2-binary==2.9.9  # PostgreSQL for Render
+
+# HTTP Client
+httpx==0.25.2
+requests==2.31.0
+aiofiles==23.2.1
+
+# File Processing
+pillow==10.1.0
+ffmpeg-python==0.2.0
+
+# Email
+aiosmtplib==3.0.1
+email-validator==2.1.0
+
+# Security
+cryptography==41.0.8
+
+# Utilities
+pydantic==2.5.0
+pydantic-settings==2.1.0
+python-dateutil==2.8.2
+
+# Optional: Redis (for session caching on Render)
+redis==5.0.1
+
+# Optional: Celery (for background tasks)
+celery==5.3.4
+
+# Monitoring
+sentry-sdk[fastapi]==1.38.0
+
+# Production Server
+gunicorn==21.2.0
+
+# Note: External API dependencies (elevenlabs, stripe, etc.)
+# will be installed separately or mocked in demo mode

@@ -1,0 +1,130 @@
+# VoiceForge AI - Render Deployment Configuration
+# This file configures the app for deployment on Render.com
+
+services:
+  # Web Service - Main Application
+  - type: web
+    name: voiceforge-ai
+    runtime: docker
+    plan: standard
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    envVars:
+      # Database (Render PostgreSQL or SQLite)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: voiceforge-db
+          property: connectionString
+      
+      # JWT Secret (generate a strong secret)
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRATION_HOURS
+        value: 24
+      
+      # Demo Mode (set to false for production)
+      - key: DEMO_MODE
+        value: false
+      - key: MOCK_API_CALLS
+        value: false
+      - key: SKIP_EXTERNAL_APIS
+        value: false
+      
+      # External API Keys (add these in Render dashboard)
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: FISH_AUDIO_API_KEY
+        sync: false
+      - key: RESEMBLE_API_KEY
+        sync: false
+      
+      # Stripe Payment
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      
+      # Email Configuration
+      - key: SMTP_SERVER
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: FROM_EMAIL
+        value: noreply@voiceforge.ai
+      - key: FROM_NAME
+        value: VoiceForge AI
+      
+      # File Storage (Render disk or cloud storage)
+      - key: UPLOAD_DIR
+        value: /data/uploads
+      - key: OUTPUT_DIR
+        value: /data/outputs
+      - key: MAX_UPLOAD_SIZE
+        value: 52428800
+      
+      # Frontend URL (update with your Render URL)
+      - key: FRONTEND_URL
+        value: https://voiceforge-ai.onrender.com
+      
+      # Security
+      - key: WATERMARK_ENABLED
+        value: true
+      - key: REQUIRE_VOICE_OWNERSHIP
+        value: false
+      
+      # App Configuration
+      - key: APP_NAME
+        value: VoiceForge AI
+      - key: APP_VERSION
+        value: 1.0.0
+      - key: DEBUG
+        value: false
+    
+    # Health check endpoint
+    healthCheckPath: /health
+    
+    # Build command (optional)
+    buildCommand: pip install -r requirements-demo.txt
+    
+    # Start command
+    startCommand: ./render-start.sh
+    
+    # Disk for persistent storage (optional - for file uploads)
+    disk:
+      name: voiceforge-data
+      mountPath: /data
+      sizeGB: 10
+
+  # Background Worker (optional - for async tasks)
+  - type: worker
+    name: voiceforge-worker
+    runtime: docker
+    plan: standard
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: voiceforge-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        fromService:
+          type: web
+          name: voiceforge-ai
+          property: envVars.JWT_SECRET_KEY
+    startCommand: celery -A app.celery worker --loglevel=info
+
+# PostgreSQL Database (Render Managed)
+databases:
+  - name: voiceforge-db
+    plan: standard
+    databaseName: voiceforge
+    user: voiceforge
