@@ -279,6 +279,8 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
     # Seed default plans after tables are created
     seed_default_plans()
+    # Seed default admin user
+    seed_default_admin()
 
 def seed_default_plans():
     """Seed default plans if none exist"""
@@ -399,5 +401,34 @@ def seed_default_plans():
         print("✅ Default plans seeded successfully")
     except Exception as e:
         print(f"⚠️ Error seeding plans: {e}")
+    finally:
+        db.close()
+
+
+def seed_default_admin():
+    """Seed default admin user if none exists"""
+    db = SessionLocal()
+    try:
+        # Check if admin already exists
+        existing = db.query(User).filter(User.role == UserRole.ADMIN).first()
+        if existing:
+            return
+        
+        # Create default admin
+        from app.utils.auth import get_password_hash
+        admin = User(
+            email="admin@voiceforge.ai",
+            hashed_password=get_password_hash("admin123"),
+            full_name="Administrator",
+            role=UserRole.ADMIN,
+            is_active=True,
+            is_verified=True,
+            email_verified=True
+        )
+        db.add(admin)
+        db.commit()
+        print("✅ Default admin created: admin@voiceforge.ai / admin123")
+    except Exception as e:
+        print(f"⚠️ Error seeding admin: {e}")
     finally:
         db.close()
