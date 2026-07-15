@@ -342,4 +342,4 @@ If you find this project useful, please give it a ⭐ on GitHub!
 **Version**: 1.0.0  
 **Last Updated**: January 2024  
 **Framework**: FastAPI + Jinja2 + TailwindCSS  
-**Made with ❤️ by VoiceForge AI Team
+**Made with ❤️ by Muhammad Moiz Ahmed
